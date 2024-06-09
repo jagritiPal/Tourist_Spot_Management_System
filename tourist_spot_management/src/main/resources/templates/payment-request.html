@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Razorpay Payment</title>
+</head>
+<body>
+
+<h1>Order Summary</h1>
+<p> Amount: ₹<span id="booking-price">500.00</span> </p>
+
+<button id="rzp-button1">Pay</button>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    var bookingPrice = 500.00; // Default booking price
+    // You can dynamically update the booking price based on your logic here
+    // For example:
+    // var bookingPrice = parseFloat(document.getElementById('booking-price').innerText);
+
+    var options = {
+        "key": "rzp_test_IVimgcOAx5gvyZ", // Enter the Key ID generated from the Dashboard
+        "amount": bookingPrice * 100, // Amount is in currency subunits. Convert to paisa (e.g., 500.00 to 50000)
+        "currency": "INR",
+        "name": "Your Business Name", // Your business name
+        "description": "Test Transaction",
+        "image": "https://example.com/your_logo",
+        "order_id": "order_OJsASJScJEci77", // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        "handler": function (response) {
+            alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
+            // Add code here to handle successful payment, such as redirecting to a confirmation page
+        },
+        "prefill": { // We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+            "name": "Gaurav Kumar", // Your customer's name
+            "email": "gaurav.kumar@example.com",
+            "contact": "9000090000" // Provide the customer's phone number for better conversion rates
+        },
+        "notes": {
+            "address": "Razorpay Corporate Office"
+        },
+        "theme": {
+            "color": "#3399cc"
+        }
+    };
+
+    var rzp1 = new Razorpay(options);
+    document.getElementById('rzp-button1').onclick = function (e) {
+        rzp1.open();
+        e.preventDefault();
+    }
+</script>
+
+</body>
+</html>
