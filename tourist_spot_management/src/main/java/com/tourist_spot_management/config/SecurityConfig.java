@@ -42,8 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/spots/**").authenticated()
                 .antMatchers("/api/bookings/add").authenticated()
                 .antMatchers("/api/bookings/**").hasRole("ADMIN")
-                .antMatchers("/api/reports/**").hasRole("ADMIN")
-                .antMatchers("/api/guides/add").hasAnyRole("ADMIN", "GUIDE")
+                //.antMatchers("/api/guides/add").hasAnyRole("ADMIN", "GUIDE")
                 .anyRequest()
                 .permitAll() // Permit all requests without authentication
                 .and()

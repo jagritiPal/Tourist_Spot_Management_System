@@ -3,10 +3,11 @@ package com.tourist_spot_management.controller;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
+import com.tourist_spot_management.entity.OrderEntity;
 import com.tourist_spot_management.payload.OrderDetails;
+import com.tourist_spot_management.service.Impl.OrderService;
 import org.json.JSONObject;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,28 +19,37 @@ import java.util.UUID;
 @RequestMapping("/api/order")
 public class OrderController {
 
-    private final String razorpayKeyId = "rzp_test_iqhfGZLeltoN7B";
-    private final String razorpayKeySecret = "W8KWi2qZ04Ehh9zchvuVUGX1";
+    @Autowired
+    private OrderService orderService;
 
+
+    //http://localhost:8080/api/order
     @PostMapping
-    public ResponseEntity<Order> createOrder(@RequestBody OrderDetails orderDetails) {
-        try {
-            RazorpayClient razorpay = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
+    public String createOrder(@RequestBody OrderDetails orderDetails) throws RazorpayException {
 
-            JSONObject orderRequest = new JSONObject();
-            orderRequest.put("amount", orderDetails.getAmount());
-            orderRequest.put("currency", orderDetails.getCurrency());
-            orderRequest.put("receipt", UUID.randomUUID().toString());
-            JSONObject notes = new JSONObject();
-            notes.put(orderDetails.getNoteSubject(), orderDetails.getNoteContent());
-            orderRequest.put("notes", notes);
+        RazorpayClient razorpay = new RazorpayClient("rzp_test_iqhfGZLeltoN7B", "W8KWi2qZ04Ehh9zchvuVUGX1");
 
-            Order order = razorpay.orders.create(orderRequest);
+        JSONObject orderRequest = new JSONObject();
+        orderRequest.put("amount", orderDetails.getAmount() * 100); // Amount should be in paise
+        orderRequest.put("currency", orderDetails.getCurrency());
+        orderRequest.put("receipt", UUID.randomUUID().toString());
 
-            return ResponseEntity.ok(order);
-        } catch (RazorpayException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        JSONObject notes = new JSONObject();
+        notes.put(orderDetails.getNoteSubject(), orderDetails.getNoteContent());
+        orderRequest.put("notes", notes);
+
+        Order order = razorpay.orders.create(orderRequest);
+
+        // Save the order details including bookingId
+        OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setBookingId(orderDetails.getBookingId());
+        orderEntity.setAmount(orderDetails.getAmount());
+        orderEntity.setCurrency(orderDetails.getCurrency());
+        orderEntity.setNoteSubject(orderDetails.getNoteSubject());
+        orderEntity.setNoteContent(orderDetails.getNoteContent());
+
+        orderService.saveOrder(orderEntity);
+
+        return order.get("id").toString();
     }
 }

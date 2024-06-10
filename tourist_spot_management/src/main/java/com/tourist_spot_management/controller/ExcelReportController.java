@@ -30,7 +30,6 @@ public class ExcelReportController {
     private ExcelReportService excelReportService;
 
     // http://localhost:8080/api/reports/download
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/download")
     public ResponseEntity<ByteArrayResource> downloadExcel() {
         try {

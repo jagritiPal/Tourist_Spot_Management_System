@@ -1,26 +1,19 @@
 package com.tourist_spot_management.service.Impl;
 
-import com.razorpay.Order;
-import com.razorpay.RazorpayClient;
-import com.razorpay.RazorpayException;
-import com.tourist_spot_management.controller.OrderController;
 import com.tourist_spot_management.entity.Booking;
 import com.tourist_spot_management.exception.ResourceNotFoundException;
 import com.tourist_spot_management.payload.BookingDTO;
-import com.tourist_spot_management.payload.OrderDetails;
 import com.tourist_spot_management.repository.BookingRepository;
 import com.tourist_spot_management.service.BookingService;
 import com.tourist_spot_management.util.ExcelReportService;
 import com.tourist_spot_management.util.PdfTicketService;
 import com.tourist_spot_management.util.SmsNotificationService;
-import org.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,9 +33,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Autowired
     private ExcelReportService excelReportService;
-
-    @Autowired
-    private OrderController orderController;
 
 
     @Override
