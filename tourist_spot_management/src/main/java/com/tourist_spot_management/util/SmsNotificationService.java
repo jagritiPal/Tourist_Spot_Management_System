@@ -23,7 +23,7 @@ public class SmsNotificationService {
 
         Message.creator(
                         new PhoneNumber(to),
-                        new PhoneNumber("+12183216906"),
+                        new PhoneNumber(""),
                         message)
                 .create();
     }
